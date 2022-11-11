@@ -8,6 +8,7 @@ const App = () => {
   const [getSecondsRecordsBreak,setSecondsRecordsBreak]=useState(0);
   const [getFlag,setFlag]=useState(false);
   const [getType,setType]=useState("");
+  const [getWatch,stopWatch]=useState(false)
 
   let result='';
   let recordResult='';
@@ -32,7 +33,7 @@ const App = () => {
     if(getFlag && getType=="break" && getSecondsRecordsBreak<1){
       clearTimeout(recordResult);
     }
-  },[getType,getSecondsRecordsWork,getSecondsRecordsBreak])
+  },[getType,getSecondsRecordsWork,getSecondsRecordsBreak,getWatch])
 
   const onDurationCheck=(event)=>{
       if(event.target.name ==='work-duration'){
@@ -54,6 +55,11 @@ const App = () => {
   }
 
   const onSetHandler=()=>{
+    if(getWatch){
+      stopWatch(false);
+      setFlag(true);
+      return ;
+    }
     setFlag(true);
     setType("work");
     setSecondsRecordsWork(getWorkDuration*60);
@@ -61,9 +67,17 @@ const App = () => {
   }
   const onStopHandler=()=>{
     setFlag(false);
+    if(result){
+      clearTimeout(result);
+    }
+    if(recordResult){
+      clearTimeout(result);
+    }
+    stopWatch(true);
   }
   const onResetHandler=()=>{
     setFlag(false);
+    stopWatch(false);
     if(result){
       clearTimeout(result);
     }
@@ -84,7 +98,8 @@ const App = () => {
     <div id="main">
 
       <div className="container">
-        {getType ==="work"?getHandlers(getSecondsRecordsWork):getHandlers(getSecondsRecordsBreak)}
+        {getType ==="work" && getHandlers(getSecondsRecordsWork)}
+        {getType === "break" && getHandlers(getSecondsRecordsBreak)}
         <br/>
         {getType}
       </div>
@@ -92,7 +107,7 @@ const App = () => {
       <div className="container">
         <button disabled={getFlag} data-testid='start-btn'onClick={onSetHandler} >Start</button>
         <button disabled={!getFlag} data-testid='stop-btn'onClick={onStopHandler} >Stop</button>
-        <button disabled={getFlag} data-testid='reset-btn'onClick={onResetHandler}>Reset</button>
+        <button disabled={!getFlag} data-testid='reset-btn'onClick={onResetHandler}>Reset</button>
       </div>
 
       <div className="container">
