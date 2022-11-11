@@ -1,3 +1,9 @@
+.container{
+    width: 400px;
+    min-height: 50px;
+    margin: auto;
+    text-align: center;
+}
 h1 {
     color: #27aedb;
     text-align: center;
